@@ -15,12 +15,12 @@
     .search-result,
     .selected-post {
         padding:.5em;
-        border:1px solid @borderColor;
-        background:@backgroundColor;
+        border:1px solid $borderColor;
+        background:$backgroundColor;
         margin-bottom:.5em;
         &:hover,
         &:active {
-            border-color: @borderHoverColor;
+            border-color: $borderHoverColor;
         }
         &:last-child {
             margin-bottom:1em;
@@ -31,8 +31,8 @@
             padding-right:.5em;
             margin-right:.5em;
             font-weight:bold;
-            background:@black;
-            color:@white;
+            background:$black;
+            color:$white;
             
             cursor:pointer;
             display:block;

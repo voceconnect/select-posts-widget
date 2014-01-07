@@ -1,0 +1,25 @@
+{
+  "name": "voce-post-meta-widgets",
+  "description": "Extend Voce Post Meta with widget fields",
+  "version": "0.1.0",
+  "homepage": "https://github.com/matstars/select-posts-widget",
+  "author": {
+    "name": "matstars"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:matstars/select-posts-widget.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matstars/select-posts-widget/issues"
+  },
+  
+  "main": "Gruntfile.js",
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-contrib-sass": "~0.6.0",
+    "grunt": "~0.4.1"
+  }
+}

@@ -187,8 +187,8 @@ class Select_posts_widget extends WP_Widget {
      */
     public static function enqueue(){
         if ( is_admin() ) {
-            wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.css', dirname( __FILE__ ) ), false, self::$ver );
-            wp_enqueue_script( 'spw-admin', plugins_url( 'javascripts/' . 'spw-admin.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
+            wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.min.css', dirname( __FILE__ ) ), false, self::$ver );
+            wp_enqueue_script( 'spw-admin', plugins_url( 'javascripts/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
         }   
     }
 
