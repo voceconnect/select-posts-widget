@@ -12,7 +12,7 @@ class Spw_ajax {
             die();
         }
         $notInArray = array();
-        $post_type = apply_filters( 'spw_post_type', array('post') );
+        $post_type = apply_filters( 'spw_post_type', Spw_helper::post_types() );
         if ( isset( $_POST['alreadySelected'] ) ){
             $notInArray = json_decode( $_POST['alreadySelected'] );
         }

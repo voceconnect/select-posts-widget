@@ -10,8 +10,8 @@ class Select_posts_widget extends WP_Widget {
      * Initialization method
      */
     public static function init(){
-        add_action( 'widgets_init', create_function( '', 'register_widget("Select_posts_widget");' ) );
-        add_action('admin_print_scripts-widgets.php', array( __CLASS__, 'enqueue' ) );
+        add_action( 'widgets_init', create_function( '', 'register_widget( "Select_posts_widget" );' ) );
+        add_action( 'admin_print_scripts-widgets.php', array( __CLASS__, 'enqueue' ) );
     }
 
     /**
@@ -74,7 +74,6 @@ class Select_posts_widget extends WP_Widget {
         $instance = array();
         $instance['title'] = esc_attr( $new_instance['title'] );
         $instance['post-order'] = esc_attr( $new_instance['post-order'] );
-
         return $instance;
     }
 
@@ -90,8 +89,8 @@ class Select_posts_widget extends WP_Widget {
         if ( !isset( $instance[ 'title' ] ) ) {
             $instance['title'] = __( 'Posts', self::$text_domain );
         }
-        if ( isset( $instance['post-order'] ) ){
-            $post_order = json_decode($instance['post-order']);
+        if ( isset( $instance['post-order'] ) && $instance['post-order'] && count( json_decode( $instance['post-order'] ) ) ){
+            $post_order = json_decode( $instance['post-order'] );
             $posts = self::get( $post_order );
             
             if ( $posts->have_posts() ) :
@@ -99,7 +98,11 @@ class Select_posts_widget extends WP_Widget {
                         <?php $selected_posts .= '<div class="selected-post" data-post-id="' . get_the_ID() . '"><div class="spw-minus"> - </div> ' . get_the_title() . '</div>'; ?>
                 <?php endwhile; ?>
                 <?php wp_reset_postdata(); ?>
-            <?php endif; ?>
+                <?php
+            else :
+                $post_order = '';
+            endif; ?>
+        
         <?php } ?>
         <div class="spw-form">
             <p>
@@ -128,18 +131,33 @@ class Select_posts_widget extends WP_Widget {
             if (typeof(setSpwSortable) == typeof(Function)) {
                 setSpwSortable();
             }
+            if (typeof(spwAttachEvents) == typeof(Function)) {
+                spwAttachEvents();
+            }
         
         </script>
         <?php 
     }
 
-    public static function get( $post_ids, $transient = false ){
-        
-        $post_type = apply_filters( 'spw_post_type', array('post') );        
+
+   /**
+     * Get the posts
+     *
+     *
+     * @param array $post_ids List of posts to be retrieved
+     * @param bool $use_transient Allows not using transients on the backend and using them on the front end
+     *
+     * @return array Updated safe values to be saved.
+     */    
+
+    public static function get( $post_ids, $use_transient = false ){
+        $posts = false; // initialize $posts, helps with comparison functions
+        $need_to_set_transient = true; // so we don't set_transient super frequently needlessly
+        $post_type = apply_filters( 'spw_post_type', Spw_helper::post_types() );        
         if ( is_array( $post_ids ) ) {
             $post_ids = array_unique( $post_ids );
         } else {
-            $post_ids = array();
+            return; // we do not want anything that doesn't have posts
         }
         $args = array(
                 'ignore_sticky_posts'=>true,
@@ -148,9 +166,19 @@ class Select_posts_widget extends WP_Widget {
                 'orderby' => 'post__in'
         );
         $args = apply_filters( 'spw_get_args', $args );
-        $posts = new WP_Query( $args );
-            
-        
+        if ( $use_transient ){
+            $transient_key = md5( serialize( $args ) );
+            $posts = get_transient( $transient_key );
+            if ( $posts ) {
+                $need_to_set_transient = false;   //already getting the transient, let's not keep the transient alive by kicking the can down the road
+            }
+        } 
+        if ( ! $posts ) {
+            $posts = new WP_Query( $args );    
+        }
+        if ( $use_transient && $need_to_set_transient ){
+            set_transient( $transient_key, $posts, 60 );
+        }
         return $posts;
     }
 
@@ -159,8 +187,8 @@ class Select_posts_widget extends WP_Widget {
      */
     public static function enqueue(){
         if ( is_admin() ) {
-            wp_enqueue_style( 'spw-admin', plugins_url('css/' . 'spw-admin.css', dirname( __FILE__ ) ), false, self::$ver );
-            wp_enqueue_script( 'spw-admin', plugins_url('javascripts/' . 'spw-admin.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
+            wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.css', dirname( __FILE__ ) ), false, self::$ver );
+            wp_enqueue_script( 'spw-admin', plugins_url( 'javascripts/' . 'spw-admin.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
         }   
     }
 
