@@ -1,6 +1,6 @@
 {
-  "name": "voce-post-meta-widgets",
-  "description": "Extend Voce Post Meta with widget fields",
+  "name": "select-posts-widget",
+  "description": "Select posts to display in a widget with an easy drag and drop interface",
   "version": "0.1.0",
   "homepage": "https://github.com/matstars/select-posts-widget",
   "author": {
