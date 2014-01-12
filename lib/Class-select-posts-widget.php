@@ -3,7 +3,7 @@
 class Select_posts_widget extends WP_Widget {
 
     protected static $text_domain = 'select_posts_widget';
-    protected static $ver = '0.1'; //for cache busting
+    protected static $ver = '0.4'; //for cache busting
     protected static $transient_limit = 60;
     
     /**
@@ -29,12 +29,16 @@ class Select_posts_widget extends WP_Widget {
     /**
      * Front-end display of widget.
      *
+     * Filter 'spw_template' - template allowing a theme to use its own template file
+     *
      * @see WP_Widget::widget()
      *
      * @param array $args     Widget arguments.
      * @param array $instance Saved values from database.
      */
     public function widget( $args, $instance ) {
+        
+        $template_file = apply_filters( 'spw_template', plugin_dir_path( dirname( __FILE__ ) ) . 'views/widget.php' );
         $title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'Recent Posts' );
         $title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
         $posts = json_decode( $instance['post-order'] );
@@ -43,20 +47,10 @@ class Select_posts_widget extends WP_Widget {
         }
         $posts = self::get( $posts, true );
         ?>
-
         <?php extract( $args ); ?>
         <?php echo $before_widget; ?>
-        <?php if ( $title ) echo $before_title . $title . $after_title; ?>
-        <ul>
-        <?php while ( $posts->have_posts() ) : $posts->the_post(); ?>
-            <li>
-                <a href="<?php the_permalink(); ?>"><?php get_the_title() ? the_title() : the_ID(); ?></a>
-            </li>
-        <?php endwhile; ?>
-        </ul>
+        <?php include( $template_file ); ?>
         <?php echo $after_widget; ?>
-        <?php wp_reset_postdata(); ?>
-
         <?php
     }
 
@@ -143,6 +137,9 @@ class Select_posts_widget extends WP_Widget {
    /**
      * Get the posts
      *
+     * Filter(s): 
+     * 'spw_post_type' - filter what post types are included
+     * 'spw_get_args' - filter args in WP_Query for getting posts
      *
      * @param array $post_ids List of posts to be retrieved
      * @param bool $use_transient Allows not using transients on the backend and using them on the front end
