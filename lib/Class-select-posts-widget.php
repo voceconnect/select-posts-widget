@@ -45,7 +45,7 @@ class Select_posts_widget extends WP_Widget {
         if ( ! is_array( $posts ) || ! count( $posts ) ) {
             return;
         }
-        $posts = self::get( $posts, true );
+        $posts = self::get( $posts, $this->id );
         ?>
         <?php extract( $args ); ?>
         <?php echo $before_widget; ?>
@@ -68,6 +68,7 @@ class Select_posts_widget extends WP_Widget {
         $instance = array();
         $instance['title'] = esc_attr( $new_instance['title'] );
         $instance['post-order'] = esc_attr( $new_instance['post-order'] );
+        delete_transient( $this->id );
         return $instance;
     }
 
@@ -85,7 +86,7 @@ class Select_posts_widget extends WP_Widget {
         }
         if ( isset( $instance['post-order'] ) && $instance['post-order'] && count( json_decode( $instance['post-order'] ) ) ){
             $post_order = json_decode( $instance['post-order'] );
-            $posts = self::get( $post_order );
+            $posts = self::get( $post_order, $this->id );
             
             if ( $posts->have_posts() ) :
                 while ( $posts->have_posts() ) : $posts->the_post(); ?>
@@ -142,14 +143,12 @@ class Select_posts_widget extends WP_Widget {
      * 'spw_get_args' - filter args in WP_Query for getting posts
      *
      * @param array $post_ids List of posts to be retrieved
-     * @param bool $use_transient Allows not using transients on the backend and using them on the front end
+     * @param string $transient_key to keep transients consistent use the id of the widget as the transient key
      *
-     * @return array Updated safe values to be saved.
+     * @return array $posts array of post objects
      */    
 
-    public static function get( $post_ids, $use_transient = false ){
-        $posts = false; // initialize $posts, helps with comparison functions
-        $need_to_set_transient = true; // so we don't set_transient super frequently needlessly
+    public static function get( $post_ids, $transient_key ){
         $post_type = apply_filters( 'spw_post_type', Spw_helper::post_types() );        
         if ( is_array( $post_ids ) ) {
             $post_ids = array_unique( $post_ids );
@@ -163,17 +162,9 @@ class Select_posts_widget extends WP_Widget {
                 'orderby' => 'post__in'
         );
         $args = apply_filters( 'spw_get_args', $args );
-        if ( $use_transient ){
-            $transient_key = md5( serialize( $args ) );
-            $posts = get_transient( $transient_key );
-            if ( $posts ) {
-                $need_to_set_transient = false;   //already getting the transient, let's not keep the transient alive by kicking the can down the road
-            }
-        } 
+        $posts = get_transient( $transient_key );
         if ( ! $posts ) {
             $posts = new WP_Query( $args );    
-        }
-        if ( $use_transient && $need_to_set_transient ){
             set_transient( $transient_key, $posts, 60 );
         }
         return $posts;
