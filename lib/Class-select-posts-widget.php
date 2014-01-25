@@ -159,7 +159,8 @@ class Select_posts_widget extends WP_Widget {
                 'ignore_sticky_posts'=>true,
                 'post__in' => $post_ids,
                 'post_type' => $post_type,
-                'orderby' => 'post__in'
+                'orderby' => 'post__in',
+                'posts_per_page' => -1
         );
         $args = apply_filters( 'spw_get_args', $args );
         $posts = get_transient( $transient_key );
