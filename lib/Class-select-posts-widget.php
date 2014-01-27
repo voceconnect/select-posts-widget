@@ -164,6 +164,7 @@ class Select_posts_widget extends WP_Widget {
         );
         $args = apply_filters( 'spw_get_args', $args );
         $posts = get_transient( $transient_key );
+        $posts = false;
         if ( ! $posts ) {
             $posts = new WP_Query( $args );    
             set_transient( $transient_key, $posts, 60 );
