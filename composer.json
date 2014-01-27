@@ -7,6 +7,22 @@
         {
             "name": "Mat Gargano",
             "email": "mat@voceconnect.com"
+        },
+        {
+            "name": "Michael Pretty",
+            "email": "mpretty@voceconnect.com"
+        },
+        {
+            "name": "Kevin Langley Jr",
+            "email": "klangley@voceconnect.com"
+        },
+        {
+            "name": "Jeff Stieler",
+            "email": "jeff@voceconnect.com"
+        },
+        {
+            "name": "Mark Parolisi",
+            "email": "mark@voceconnect.com"
         }
     ],
     "type": "library",
