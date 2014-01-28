@@ -20,7 +20,8 @@ class Spw_ajax {
         $args = array(
             's' => $query,
             'post__not_in' => $notInArray,
-            'post_type' => $post_type
+            'post_type' => $post_type,
+            'post_status' => 'publish',
         );
 
 

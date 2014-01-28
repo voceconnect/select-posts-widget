@@ -3,7 +3,7 @@
 class Select_posts_widget extends WP_Widget {
 
     protected static $text_domain = 'select_posts_widget';
-    protected static $ver = '0.4'; //for cache busting
+    protected static $ver = '0.4.5'; //for cache busting
     protected static $transient_limit = 60;
     
     /**
@@ -160,7 +160,8 @@ class Select_posts_widget extends WP_Widget {
                 'post__in' => $post_ids,
                 'post_type' => $post_type,
                 'orderby' => 'post__in',
-                'posts_per_page' => -1
+                'posts_per_page' => -1,
+                'post_status' => 'publish',
         );
         $args = apply_filters( 'spw_get_args', $args );
         $posts = get_transient( $transient_key );

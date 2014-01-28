@@ -2,7 +2,7 @@
 /*
 Plugin Name: Select Posts Widget
 Description: Select Posts
-Version: 0.4.4
+Version: 0.4.5
 Author: Mat Gargano
 Author URI: http://www.matgargano.com
 */
