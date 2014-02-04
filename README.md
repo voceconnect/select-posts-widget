@@ -53,7 +53,7 @@ The following filters are available:
 ```
 
 
-#### Example of using a custom template from within your theme for an individual widget PHP 5.3+ which allows anonymous functions
+#### Example of using a custom template from within your theme for an individual widget (assuming PHP 5.3+ which allows anonymous functions)
 
 ```php
 <?php
@@ -64,8 +64,15 @@ The following filters are available:
 ```
 ## Changelog
 
+**0.5.0**  
+*Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget  
+*Added templating for individual widgets  
+*Added indicator if no posts are selected
+*Refactored WET code
+*Updated code comments  
+  
 **0.4.1**  
-*Adding readme*
+*Added readme*
 
 **0.4**  
-*Adding filter to allow developers ability to use custom template for widget*
+*Added filter to allow developers ability to use custom template for widget*
