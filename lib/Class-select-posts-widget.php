@@ -3,7 +3,7 @@
 class Select_posts_widget extends WP_Widget {
 
     protected static $text_domain = 'select_posts_widget';
-    protected static $ver = '0.4.5'; //for cache busting
+    protected static $ver = '0.5.0'; //for cache busting
     protected static $transient_limit = 60;
     
     /**
@@ -174,12 +174,12 @@ class Select_posts_widget extends WP_Widget {
     }
 
     /**
-     * Enqueue CSS and JavaScripts
+     * Enqueue CSS and JS
      */
     public static function enqueue(){
         if ( is_admin() ) {
             wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.min.css', dirname( __FILE__ ) ), false, self::$ver );
-            wp_enqueue_script( 'spw-admin', plugins_url( 'javascripts/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
+            wp_enqueue_script( 'spw-admin', plugins_url( 'js/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
         }   
     }
 

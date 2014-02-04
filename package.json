@@ -1,7 +1,7 @@
 {
   "name": "select-posts-widget",
   "description": "Select posts to display in a widget with an easy drag and drop interface",
-  "version": "0.4.5",
+  "version": "0.5.0",
   "homepage": "https://github.com/voceconnect/select-posts-widget",
   "author": {
     "name": "matstars"
