@@ -65,11 +65,11 @@ The following filters are available:
 ## Changelog
 
 **0.5.0**  
-*Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget  
-*Added templating for individual widgets  
-*Added indicator if no posts are selected
-*Refactored WET code
-*Updated code comments  
+*Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget*
+*Added templating for individual widgets*
+*Added indicator if no posts are selected*
+*Refactored WET code*
+*Updated code comments*
   
 **0.4.1**  
 *Added readme*
