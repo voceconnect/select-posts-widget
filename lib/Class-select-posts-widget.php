@@ -11,7 +11,7 @@ class Select_posts_widget extends WP_Widget {
      */
     public static function init(){
         add_action( 'widgets_init', create_function( '', 'register_widget( "Select_posts_widget" );' ) );
-        add_action( 'admin_print_scripts-widgets.php', array( __CLASS__, 'enqueue' ) );
+        add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
     }
 
     /**
@@ -183,7 +183,7 @@ class Select_posts_widget extends WP_Widget {
      * Enqueue CSS and JS
      */
     public static function enqueue(){
-        if ( is_admin() ) {
+        if ( is_admin() && get_current_screen()->id === 'widgets' ) {
             wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.min.css', dirname( __FILE__ ) ), false, self::$ver );
             wp_enqueue_script( 'spw-admin', plugins_url( 'js/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
         }   
