@@ -3,16 +3,24 @@
 
 class Spw_ajax {
     
+    /**
+     * Initialization method, sets up the ajax hook
+     */
+
     public static function init(){
         add_action( 'wp_ajax_spw_search', array( __CLASS__, 'search_callback' ) );
     }
+
+    /**
+     * ajax callback for searches
+     */
 
     public static function search_callback() {
         if ( !isset( $_POST['query'] )) {
             die();
         }
         $notInArray = array();
-        $post_type = apply_filters( 'spw_post_type', Spw_helper::post_types() );
+        $post_type = Spw_helper::post_types();
         if ( isset( $_POST['alreadySelected'] ) ){
             $notInArray = json_decode( $_POST['alreadySelected'] );
         }

@@ -1,6 +1,5 @@
 /*global jQuery,ajaxurl */
-var setSpwSortable,
-    spwAttachEvents;
+var setSpwSortable;
 jQuery(document).ready(function($){
     var ids = [];
     setSpwSortable = function(){
@@ -16,7 +15,9 @@ jQuery(document).ready(function($){
         });
     };
     var addPost = function($container, id){
-        var posts = [];
+        var posts = [],
+            $parent = $container.closest('.spw-form'),
+            $noSelected = $parent.find('.spw-no-selected');
         $container.find('.post-list');
         if($container.val()){
             posts = JSON.parse($container.val());
@@ -25,18 +26,23 @@ jQuery(document).ready(function($){
             posts = [];
         }
         posts.push(id);
+        $noSelected.hide();
         $container.val(JSON.stringify(posts));
     };
     var updatePosts = function($parent){
-        var order = [];
+        var order = [],
+            $noSelected = $parent.find('.spw-no-selected');
         $parent.find('.selected-post:visible').each(function(){
             order.push ($(this).data('post-id'));
         });
+        if (order.length <= 0){
+            $noSelected.show();
+        }
         $parent.find('.post-list').val(JSON.stringify(order));
 
     };
-    spwAttachEvents = function(){
-        $('.widget').on('click', '.spw-plus', function(){
+    var spwAttachEvents = function(){
+        $('body').on('click', '.spw-plus', function(){
             var $form = $(this).closest('.spw-form'),
                 $parent = $(this).closest('.search-result'),
                 $postList = $form.find('.post-list'),
@@ -49,7 +55,7 @@ jQuery(document).ready(function($){
             $selectedPosts.append($parent);
                 
         });
-        $('.widget').on('click', '.spw-minus', function(){
+        $('body').on('click', '.spw-minus', function(){
             var $form = $(this).closest('.spw-form'),
                 $parent = $(this).closest('.selected-post');
             $parent.fadeOut(function(){
@@ -59,7 +65,7 @@ jQuery(document).ready(function($){
                 
                 
         });
-        $('.widget').on('keypress', '.spw-search', function(e) {
+        $('body').on('keypress', '.spw-search', function(e) {
             if(e.which === 13) {
                 e.preventDefault();
                 var $form = $(this).closest('.spw-form'),

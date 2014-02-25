@@ -3,12 +3,13 @@
 module.exports = function(grunt) {
   'use strict';
   // Project configuration.
+  grunt.registerTask('watch', [ 'watch' ]);
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
     // Lint JavaScript
     jshint: {
-      all: ['javascripts/spw-admin.js'],
+      all: ['js/spw-admin.js'],
        options:{
         "forin": true,
         "noarg": true,
@@ -28,9 +29,9 @@ module.exports = function(grunt) {
                 preserveComments: "some"
             },
             files: {
-                "javascripts/spw-admin.min.js": [
-                    "javascripts/*.js",
-                    "!javascripts/*.min.js",
+                "js/spw-admin.min.js": [
+                    "js/*.js",
+                    "!js/*.min.js",
                 ],
             }
         }
@@ -57,7 +58,24 @@ module.exports = function(grunt) {
           ext: '.css'
         }]
       }
+    },
+    watch: {
+      js: {
+        files: ['js/*.js'],
+        tasks: ['jshint', 'uglify'],
+        options: {
+          livereload: true,
+        }
+      },
+      css: {
+        files: ['sass/*.scss'],
+        tasks: ['sass', 'cssmin'],
+        options: {
+          livereload: true,
+        }
+      }
     }
+
 
   });
 
@@ -66,6 +84,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default tasks to be run.
   grunt.registerTask('default', [

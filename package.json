@@ -1,7 +1,7 @@
 {
   "name": "select-posts-widget",
   "description": "Select posts to display in a widget with an easy drag and drop interface",
-  "version": "0.4.5",
+  "version": "0.5.0",
   "homepage": "https://github.com/voceconnect/select-posts-widget",
   "author": {
     "name": "matstars"
@@ -20,6 +20,7 @@
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-cssmin": "~0.6.1",
     "grunt-contrib-sass": "~0.6.0",
+    "grunt-contrib-watch": "~0.5.0",
     "grunt": "~0.4.1"
   }
 }

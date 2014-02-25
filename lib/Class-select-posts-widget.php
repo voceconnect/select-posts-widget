@@ -3,7 +3,7 @@
 class Select_posts_widget extends WP_Widget {
 
     protected static $text_domain = 'select_posts_widget';
-    protected static $ver = '0.4.5'; //for cache busting
+    protected static $ver = '0.5.0'; //for cache busting
     protected static $transient_limit = 60;
     
     /**
@@ -21,7 +21,7 @@ class Select_posts_widget extends WP_Widget {
         parent::__construct(
             'select_posts_widget', // Base ID
             'Select Posts Widget', // Name
-            array( 'description' => __( 'Select & Customize Post Widgets', self::$text_domain ), ) // Args
+            array( 'description' => __( 'Select & Customize Post Widgets', self::$text_domain ), ) 
         );
     }
 
@@ -30,6 +30,8 @@ class Select_posts_widget extends WP_Widget {
      * Front-end display of widget.
      *
      * Filter 'spw_template' - template allowing a theme to use its own template file
+     * Filter 'spw_WIDGET_NAME_template' - overrides the output template for the widget on a widget by widget basis, the WIDGET_NAME appears on the back-end in the widgets window see below for more information.
+     * Filter 'widget_title' - this is a WordPress core filter see http://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters for more information.
      *
      * @see WP_Widget::widget()
      *
@@ -37,8 +39,9 @@ class Select_posts_widget extends WP_Widget {
      * @param array $instance Saved values from database.
      */
     public function widget( $args, $instance ) {
-        
-        $template_file = apply_filters( 'spw_template', plugin_dir_path( dirname( __FILE__ ) ) . 'views/widget.php' );
+        $template_file = plugin_dir_path( dirname( __FILE__ ) ) . 'views/widget.php';
+        $template_file = apply_filters( 'spw_template', $template_file );
+        $template_file = apply_filters( 'spw_' . $this->id . '_template', $template_file );
         $title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'Recent Posts' );
         $title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
         $posts = json_decode( $instance['post-order'] );
@@ -80,15 +83,16 @@ class Select_posts_widget extends WP_Widget {
      * @param array $instance Previously saved values from database.
      */
     public function form( $instance ) {
-        $post_order = $selected_posts = '';
+        $post_order = $selected_posts = $spw_no_selected = '';
         if ( !isset( $instance[ 'title' ] ) ) {
             $instance['title'] = __( 'Posts', self::$text_domain );
         }
         if ( isset( $instance['post-order'] ) && $instance['post-order'] && count( json_decode( $instance['post-order'] ) ) ){
             $post_order = json_decode( $instance['post-order'] );
             $posts = self::get( $post_order, $this->id );
-            
+                        
             if ( $posts->have_posts() ) :
+                $spw_no_selected = 'style="display:none;"';
                 while ( $posts->have_posts() ) : $posts->the_post(); ?>
                         <?php $selected_posts .= '<div class="selected-post" data-post-id="' . get_the_ID() . '"><div class="spw-minus"> - </div> ' . get_the_title() . '</div>'; ?>
                 <?php endwhile; ?>
@@ -115,21 +119,24 @@ class Select_posts_widget extends WP_Widget {
             <hr>
             <p>Posts:</p>
             <div class="selected-posts">
+                <p class="spw-no-selected" <?php echo $spw_no_selected; ?>><strong>No posts selected</strong></p>
                 <?php echo $selected_posts; ?>
             </div>
+            <?php $this_id = $this->id; ?>
+            <?php if ( strpos( $this_id, '_i_') === false ) { ?>
+                <hr>
+                <p>
+                    <strong>Widget name (for templating): </strong> <?php echo $this->id; ?>
+                </p>
+            <?php } ?>
 
 
             <input type="hidden" class="post-list" value="<?php echo json_encode( $post_order ) ?>" id="<?php echo $this->get_field_id( 'post-order' ); ?>" name="<?php echo $this->get_field_name( 'post-order' ); ?>" >
         </div>
         <script>
-
             if (typeof(setSpwSortable) == typeof(Function)) {
                 setSpwSortable();
-            }
-            if (typeof(spwAttachEvents) == typeof(Function)) {
-                spwAttachEvents();
-            }
-        
+            }        
         </script>
         <?php 
     }
@@ -139,7 +146,6 @@ class Select_posts_widget extends WP_Widget {
      * Get the posts
      *
      * Filter(s): 
-     * 'spw_post_type' - filter what post types are included
      * 'spw_get_args' - filter args in WP_Query for getting posts
      *
      * @param array $post_ids List of posts to be retrieved
@@ -149,7 +155,7 @@ class Select_posts_widget extends WP_Widget {
      */    
 
     public static function get( $post_ids, $transient_key ){
-        $post_type = apply_filters( 'spw_post_type', Spw_helper::post_types() );        
+        $post_type = Spw_helper::post_types(); 
         if ( is_array( $post_ids ) ) {
             $post_ids = array_unique( $post_ids );
         } else {
@@ -174,12 +180,12 @@ class Select_posts_widget extends WP_Widget {
     }
 
     /**
-     * Enqueue CSS and JavaScripts
+     * Enqueue CSS and JS
      */
     public static function enqueue(){
         if ( is_admin() ) {
             wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.min.css', dirname( __FILE__ ) ), false, self::$ver );
-            wp_enqueue_script( 'spw-admin', plugins_url( 'javascripts/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
+            wp_enqueue_script( 'spw-admin', plugins_url( 'js/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
         }   
     }
 
