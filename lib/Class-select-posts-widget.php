@@ -3,7 +3,7 @@
 class Select_posts_widget extends WP_Widget {
 
     protected static $text_domain = 'select_posts_widget';
-    protected static $ver = '0.5.0'; //for cache busting
+    protected static $ver = '0.5.1'; //for cache busting
     protected static $transient_limit = 60;
     
     /**
