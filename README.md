@@ -4,8 +4,8 @@ Contributors: matstars
 Tags: post, widget  
 Tested up to: 3.8  
 Requires at least: 3.5  
-Tested up to: 3.8  
-Stable tag: 0.5.0
+Tested up to: 3.8.1  
+Stable tag: 0.5.1
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,9 @@ The following filters are available:
 ?>
 ```
 ## Changelog
+
+**0.5.1**  
+*Changed composer type to wordpress-plugin (was library)*
 
 **0.5.0**  
 *Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget*
