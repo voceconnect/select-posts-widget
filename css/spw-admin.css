@@ -35,5 +35,11 @@
     cursor: pointer;
     display: block;
     float: left; }
+.spw-form .spw-search-button {
+  padding-top: 3px;
+  width: 10%;
+  height: 27px; }
+.spw-form .spw-search {
+  width: 87%; }
 .spw-form .selected-post {
   cursor: move; }

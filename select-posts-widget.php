@@ -1,14 +1,16 @@
 <?php
 /*
 Plugin Name: Select Posts Widget
+Contributors: matstars, voceplatforms
 Description: Select Posts
-Version: 0.5.1
-Author: Mat Gargano
-Author URI: http://www.matgargano.com
+Stable tag: 0.5.2
+Tested up to: 4.0
+Author URI: http://voceconnect.com
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-foreach ( glob( plugin_dir_path(__FILE__) . "lib/*.php" ) as $filename ) {
-  include $filename;
-}
+require __DIR__ . '/lib/class-select-posts-widget.php';
 
-Select_posts_widget::init();
+$select_posts_widget = new Select_Posts_Widget;
+$select_posts_widget->init();
