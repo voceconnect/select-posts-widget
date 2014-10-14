@@ -1,19 +1,20 @@
 /*global jQuery,ajaxurl */
 var setSpwSortable;
 jQuery(document).ready(function ($) {
-    var ids = [],
-        setSpwSortable = function () {
-            $(".selected-posts").sortable({
-                stop: function () {
-                    ids = [];
-                    $(this).find('.selected-post').each(function () {
-                        ids.push($(this).data('post-id'));
-                    });
-                    $(this).closest('.spw-form').find('.post-list').val(JSON.stringify(ids));
 
-                }
-            });
-        },
+    setSpwSortable = function () {
+        $(".selected-posts").sortable({
+            stop: function () {
+                ids = [];
+                $(this).find('.selected-post').each(function () {
+                    ids.push($(this).data('post-id'));
+                });
+                $(this).closest('.spw-form').find('.post-list').val(JSON.stringify(ids));
+
+            }
+        });
+    };
+    var ids = [],
         addPost = function ($container, id) {
             var posts = [],
                 $parent = $container.closest('.spw-form'),
