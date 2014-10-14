@@ -38,10 +38,22 @@
 .spw-form .spw-search-button {
   padding-top: 3px;
   width: 10%;
-  height: 27px; }
+  height: 27px;
+  position: relative; }
 .spw-form .spw-search {
   width: 87%; }
 .spw-form .selected-post {
   cursor: move; }
+.spw-form .dashicons-search:before {
+  position: absolute;
+  top: 2px;
+  left: 4px; }
+
+/* theme customizer customizations*/
+#accordion-panel-widgets .spw-form .spw-search-button {
+  width: 30px;
+  height: 26px; }
+#accordion-panel-widgets .spw-form .spw-search {
+  width: 200px; }
 
 /*# sourceMappingURL=spw-admin.css.map */
