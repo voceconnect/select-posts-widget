@@ -48,6 +48,10 @@
 	}
 	.spw-search {
 		width: 87%;
+		&.warning {
+			border:1px solid $warningBorderColor;
+			background:$warningBgColor;
+		}
 	}
 	.selected-post {
 		cursor: move;

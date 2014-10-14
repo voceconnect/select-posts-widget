@@ -42,6 +42,9 @@
   position: relative; }
 .spw-form .spw-search {
   width: 87%; }
+  .spw-form .spw-search.warning {
+    border: 1px solid #FF0000;
+    background: #FFECE8; }
 .spw-form .selected-post {
   cursor: move; }
 .spw-form .dashicons-search:before {

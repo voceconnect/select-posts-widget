@@ -1,6 +1,6 @@
 /*global jQuery,ajaxurl */
 
-var setSpwSortable; //declare it in the global namespace so that we can use it externally
+var setSpwSortable; //declare it in the global namespace so that we can use it externally, e.g. when adding new widgets
 
 jQuery(document).ready(function ($) {
 
@@ -27,6 +27,7 @@ jQuery(document).ready(function ($) {
         ids = [],
         $widgetsHolderWrap = $('.widgets-holder-wrap, #accordion-panel-widgets'),  /* accommodate theme customizer and widget screen */
         addPost = function ($container, id) {
+
             var posts = [],
                 $parent = $container.closest('.spw-form'),
                 $noSelected = $parent.find('.spw-no-selected');
@@ -79,6 +80,7 @@ jQuery(document).ready(function ($) {
                     $parent = $(this).closest('.selected-post');
                 $parent.fadeOut(function () {
                     updatePosts($form);
+                    $(this).remove();
 
                 });
 
@@ -91,8 +93,7 @@ jQuery(document).ready(function ($) {
             });
 
             $widgetsHolderWrap.on('keydown', '.spw-search', function (e) {
-                $(this).css('background', '');
-                $(this).css('border', '');
+                $(this).removeClass('warning');
                 if (e.which === 13) {
                     e.preventDefault();
                     var $form = $(this).closest('.spw-form');
@@ -108,11 +109,14 @@ jQuery(document).ready(function ($) {
                     query = $form.find('.spw-search').val(),
                     $searchResults = $form.find('.search-results'),
                     $nonce = $form.find('.security'),
-                    nonce = $nonce.val();
+                    nonce = $nonce.val(),
+                    widget_id = $form.closest('.widget-content').siblings('.widget-id').val();
+
+
                 $searchResults.html('');
                 if (!query) {
-                    $form.find('.spw-search').css('border', '1px solid #FF0000');
-                    $form.find('.spw-search').css('background', '#ffece8');
+                    $form.find('.spw-search').addClass('warning');
+
                     return;
                 }
                 var $postList = $form.find('.post-list');
@@ -121,6 +125,7 @@ jQuery(document).ready(function ($) {
                     action         : 'spw_search',
                     query          : query,
                     alreadySelected: $postList.val(),
+                    widget_id      : widget_id,
                     security       : nonce
                 };
                 $.post(ajaxurl, data, function (response) {

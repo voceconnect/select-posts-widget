@@ -2,8 +2,8 @@
 /*
 Plugin Name: Select Posts Widget
 Contributors: matstars, voceplatforms
-Description: Select Posts
-Stable tag: 0.5.2
+Description: An easy to use (and extend) widget that allows you to selectively curate posts using a simple drag and drop interface.
+Stable tag: 0.6.0
 Tested up to: 4.0
 Author URI: http://voceconnect.com
 License: GPLv2 or later
