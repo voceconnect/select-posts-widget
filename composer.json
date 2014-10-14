@@ -1,28 +1,12 @@
 {
     "name": "voceconnect/select-posts-widget",
-    "description": "Select posts to display in a widget with an easy drag and drop interface",
+    "description": "An easy to use (and extend) widget that allows you to selectively curate posts using a simple drag and drop interface",
     "keywords": ["wordpress", "widget", "select posts"],
     "license": "GPL-3.0+",
     "authors": [
         {
             "name": "Mat Gargano",
             "email": "mat@voceconnect.com"
-        },
-        {
-            "name": "Michael Pretty",
-            "email": "mpretty@voceconnect.com"
-        },
-        {
-            "name": "Kevin Langley Jr",
-            "email": "klangley@voceconnect.com"
-        },
-        {
-            "name": "Jeff Stieler",
-            "email": "jeff@voceconnect.com"
-        },
-        {
-            "name": "Mark Parolisi",
-            "email": "mark@voceconnect.com"
         }
     ],
     "type": "wordpress-plugin",

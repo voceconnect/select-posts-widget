@@ -1,68 +1,60 @@
-Select Posts Widget
-===================
+=== Select Posts Widget ===
+
 Contributors: matstars  
 Tags: post, widget  
-Tested up to: 3.8  
+Tested up to: 4.0
 Requires at least: 3.5  
-Tested up to: 3.8.1  
-Stable tag: 0.5.1
+Stable tag: 0.6.0
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-## Description
-Widget allowing custom curation.
+== Description ==
+An easy to use (and extend) widget that allows you to selectively curate posts using a simple drag and drop interface.
 
 The following filters are available:
 
-* spw_get_args to override arguments of main query for the widget.
-* spw_template to override the output template for the widget, see below for more information.
-* spw_WIDGET_NAME_template to override the output template for the widget on a widget by widget basis, the WIDGET_NAME appears on the back-end in the widgets window see below for more information.
+* spw_template to override the output template for the widget, see below for more information. Passes an optional second argument of the widget id.
 * widget_title this is a WordPress core filter [see here](http://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters) for more information.
-* spw_post_type to override the post types available for this widget.
+* spw_post_types to override the post types available for this widget. Passes an optional second argument of the widget id.
 
 
-## Installation
+== Installation ==
 > See [Installing Plugins](http://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
 
 
-## Usage
+== Frequently Asked Questions ==
 
-#### Example of using a custom template from within your theme pre-PHP 5.3
+= How do you use a custom template? =
 
-```php
-<?php
-    function customize_spw_template_filter( $template ){
-        $template_dir = get_template_directory();
-        return $template_dir . '/views/custom-spw.php';    
-    }
-    add_filter( 'spw_template', 'customize_spw_template_filter' );
-?>
-```
+Simply extend the plugin using the `spw_template` filter.
 
-
-#### Example of using a custom template from within your theme PHP 5.3+ which allows anonymous functions
-
-```php
-<?php
-
-    add_filter( 'spw_template', function( $template ){
-        $template_dir = get_template_directory();
-        return $template_dir . '/views/custom-spw.php';
-    });
-?>
-```
+    <?php
+        add_filter( 'spw_template', 'customize_spw_template_filter' );
+        function customize_spw_template_filter( $template ){
+            $template_dir = get_template_directory();
+            return $template_dir . '/views/custom-spw.php';
+        }
+    ?>
 
 
-#### Example of using a custom template from within your theme for an individual widget (assuming PHP 5.3+ which allows anonymous functions)
 
-```php
-<?php
-    add_filter('spw_select_posts_widget-15_template', function($template){
-        return get_template_directory() . '/views/custom-spw-15.php';
-    });
-?>
-```
-## Changelog
+= How do I set the plugin to use post types besides/in addition to `post`? =
+
+Simply extend the plugin using the `spw_select_posts_widget` filter.
+
+    <?php
+        add_filter( 'spw_select_posts_widget-15_template', 'customize_spw_post_types' );
+        function customize_spw_post_types($post_types){
+            $post_types = array( 'post', 'page' 'custom_post_type' );
+            return $post_types;
+        }
+    ?>
+
+== Changelog ==
+
+**0.6.0**
+*Works with widget section in the theme customizer
+*Filter post types globally or per post type (by passing optional argument of widget id in spw_template and spw_post_types filters)
 
 **0.5.1**  
 *Changed composer type to wordpress-plugin (was library)*

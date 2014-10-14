@@ -1,5 +1,5 @@
 .spw-form .loading {
-  background: url("../img/wpspin_light.gif") no-repeat scroll center center/16px 16px rgba(0, 0, 0, 0);
+  background: url("../img/wpspin_light.gif") no-repeat scroll center center/16px 16px transparent;
   background-size: 16px 16px;
   display: none;
   opacity: .7;
@@ -12,8 +12,8 @@
 .spw-form .search-result,
 .spw-form .selected-post {
   padding: .5em;
-  border: 1px solid #e5e5e5;
-  background: #fafafa;
+  border: 1px solid #E5E5E5;
+  background: #FAFAFA;
   margin-bottom: .5em; }
   .spw-form .search-result:hover, .spw-form .search-result:active,
   .spw-form .selected-post:hover,
@@ -30,10 +30,33 @@
     padding-right: .5em;
     margin-right: .5em;
     font-weight: bold;
-    background: black;
-    color: white;
+    background: #000;
+    color: #FFF;
     cursor: pointer;
     display: block;
     float: left; }
+.spw-form .spw-search-button {
+  padding-top: 3px;
+  width: 10%;
+  height: 27px;
+  position: relative; }
+.spw-form .spw-search {
+  width: 87%; }
+  .spw-form .spw-search.warning {
+    border: 1px solid #FF0000;
+    background: #FFECE8; }
 .spw-form .selected-post {
   cursor: move; }
+.spw-form .dashicons-search:before {
+  position: absolute;
+  top: 2px;
+  left: 4px; }
+
+/* theme customizer customizations*/
+#accordion-panel-widgets .spw-form .spw-search-button {
+  width: 30px;
+  height: 26px; }
+#accordion-panel-widgets .spw-form .spw-search {
+  width: 200px; }
+
+/*# sourceMappingURL=spw-admin.css.map */
