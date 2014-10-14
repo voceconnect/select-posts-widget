@@ -81,6 +81,7 @@ class Select_Posts_Widget extends WP_Widget {
 	 * @see WP_Widget::form()
 	 *
 	 * @param array $instance Previously saved values from database.
+	 * @return void
 	 */
 	public function form( $instance ) {
 		$post_order = $selected_posts = $spw_no_selected = '';
@@ -106,7 +107,7 @@ class Select_Posts_Widget extends WP_Widget {
 		<div class="spw-form">
 			<p>
 				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', self::$text_domain ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $instance['title']; ?>" />
+				<input class="widefat title" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $instance['title']; ?>" />
 			</p>
 
 			<p>
@@ -127,6 +128,7 @@ class Select_Posts_Widget extends WP_Widget {
 				<p class="spw-no-selected" <?php echo $spw_no_selected; ?>><strong>No posts selected</strong></p>
 				<?php echo $selected_posts; ?>
 			</div>
+			<input type="hidden" class="security" value="<?php echo wp_create_nonce('select-posts-widget')?>">
 			<input type="hidden" class="post-list" value="<?php echo json_encode( $post_order ) ?>" id="<?php echo $this->get_field_id( 'post-order' ); ?>" name="<?php echo $this->get_field_name( 'post-order' ); ?>">
 		</div>
 		<script>
@@ -207,6 +209,7 @@ class Select_Posts_Widget extends WP_Widget {
 		if ( ! isset( $_POST['query'] ) ) {
 			die();
 		}
+		check_ajax_referer( 'select-posts-widget', 'security' );
 		$notInArray = array();
 		$post_type  = $this->post_types();
 		if ( isset( $_POST['alreadySelected'] ) ) {
