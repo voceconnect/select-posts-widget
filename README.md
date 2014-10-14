@@ -4,7 +4,7 @@ Contributors: matstars
 Tags: post, widget  
 Tested up to: 4.0
 Requires at least: 3.5  
-Stable tag: 0.6.0
+Stable tag: 0.7.0
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ Simply extend the plugin using the `spw_select_posts_widget` filter.
     ?>
 
 == Changelog ==
+
+**0.7.0**
+*Refactored post selection to use the post selection ui (https://github.com/voceconnect/post-selection-ui)
 
 **0.6.0**  
 *Works with widget section in the theme customizer

@@ -3,7 +3,7 @@
 class Select_Posts_Widget extends WP_Widget {
 
 	protected static $text_domain = 'select_posts_widget';
-	protected static $ver = '0.6.0'; //for cache busting
+	protected static $ver = '0.7.0'; //for cache busting
 	protected static $transient_limit = 600;
 
 	/**
@@ -12,7 +12,7 @@ class Select_Posts_Widget extends WP_Widget {
 	public function init() {
 		add_action( 'widgets_init', array(__CLASS__, 'register_widget'));
 		add_action( 'admin_print_scripts-widgets.php', array( $this, 'enqueue' ) );
-		add_action( 'wp_ajax_spw_search', array( $this, 'search_callback' ) );
+
 	}
 
 	/**
@@ -43,7 +43,7 @@ class Select_Posts_Widget extends WP_Widget {
 		$template_file = apply_filters( 'spw_template', $template_file, $this->id );
 		$title         = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'Recent Posts' );
 		$title         = apply_filters( 'widget_title', $title, $instance, $this->id_base );
-		$posts         = json_decode( $instance['post-order'] );
+		$posts         = explode(',', $instance['post_ids']);
 		if ( ! is_array( $posts ) || ! count( $posts ) ) {
 			return;
 		}
@@ -69,7 +69,7 @@ class Select_Posts_Widget extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		$instance               = array();
 		$instance['title']      = esc_attr( $new_instance['title'] );
-		$instance['post-order'] = esc_attr( $new_instance['post-order'] );
+		$instance['post_ids'] = esc_attr( $new_instance['post_ids'] );
 		delete_transient( $this->id );
 
 		return $instance;
@@ -84,45 +84,37 @@ class Select_Posts_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function form( $instance ) {
-		$post_order = $selected_posts = $spw_no_selected = '';
 		if ( ! isset( $instance['title'] ) ) {
 			$instance['title'] = __( 'Posts', self::$text_domain );
 		}
-		if ( isset( $instance['post-order'] ) && $instance['post-order'] && count( json_decode( $instance['post-order'] ) ) ) {
-			$post_order = json_decode( $instance['post-order'] );
-			$posts      = $this->get( $post_order, $this->id );
-
-			if ( $posts->have_posts() ) :
-				$spw_no_selected = 'style="display:none;"';
-				while ( $posts->have_posts() ) : $posts->the_post(); ?>
-					<?php $selected_posts .= '<div class="selected-post" data-post-id="' . get_the_ID() . '"><div class="spw-minus"> - </div> ' . get_the_title() . '</div>'; ?>
-				<?php endwhile; ?>
-				<?php wp_reset_postdata(); ?>
-			<?php
-			else :
-				$post_order = '';
-			endif; ?>
-
-		<?php } ?>
+		$post_ids = $instance['post_ids'];
+		$post_ids_array = explode(',', $post_ids );
+		?>
 		<div class="spw-form">
 			<p>
 				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', self::$text_domain ); ?></label>
 				<input class="widefat title" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $instance['title']; ?>" />
 			</p>
 
-			<p>
-				<label for="search"><?php _e( 'Search:', self::$text_domain ); ?></label><br>
-				<input class="widefat spw-search" name="search" type="text" placeholder="Search..." />
-				<button type="button" class="spw-search-button button-secondary"><i class="dashicons-before dashicons-search"></i></button>
-			</p>
 
-			<p class="loading"></p>
 
-			<div class="search-results clearfix">
-
-			</div>
 			<?php
-				$post_types = $this->post_types( $this->id );
+			$post_types = $this->post_types( $this->id );
+
+			if ( ! function_exists( 'post_selection_ui ') ) {
+				echo post_selection_ui( $this->get_field_name( 'post_ids' ), array(
+						'post_type' => $post_types,
+						'selected'  => $post_ids_array,
+						'limit'     => 100
+					)
+				);
+			} else {
+				echo 'something is not right?';
+			}
+
+
+
+
 				$output_post_type = null;
 				foreach($post_types as $post_type) {
 					if ( $output_post_type ) {
@@ -132,23 +124,11 @@ class Select_Posts_Widget extends WP_Widget {
 				}
 
 			?>
-			<p>This widget is registered to display the following post type<?php echo count($post_types)>1 ? 's' : ''; ?>: <strong><?php echo $output_post_type; ?> </strong></p>
+			<p>This widget is registered to display the following post type<?php echo count($post_types) > 1 ? 's' : ''; ?>: <strong><?php echo $output_post_type; ?> </strong></p>
 			<hr>
-			<p>Posts:</p>
 
-			<div class="selected-posts">
-				<p class="spw-no-selected" <?php echo $spw_no_selected; ?>><strong>No posts selected</strong></p>
-				<?php echo $selected_posts; ?>
-			</div>
-			<input type="hidden" class="security" value="<?php echo wp_create_nonce('select-posts-widget')?>">
-
-			<input type="hidden" class="post-list" value="<?php echo json_encode( $post_order ) ?>" id="<?php echo $this->get_field_id( 'post-order' ); ?>" name="<?php echo $this->get_field_name( 'post-order' ); ?>">
 		</div>
-		<script>
-			if (typeof(setSpwSortable) == typeof(Function)) {
-				setSpwSortable();
-			}
-		</script>
+
 	<?php
 	}
 
@@ -157,7 +137,6 @@ class Select_Posts_Widget extends WP_Widget {
 	 * Get the posts
 	 *
 	 * Filter(s):
-	 * 'spw_get_args' - filter args in WP_Query for getting posts
 	 *
 	 * @param array  $post_ids      List of posts to be retrieved
 	 * @param string $transient_key to keep transients consistent use the id of the widget as the transient key
@@ -202,7 +181,7 @@ class Select_Posts_Widget extends WP_Widget {
 
 		if ( is_admin() ) {
 			wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.min.css', dirname( __FILE__ ) ), false, self::$ver );
-			wp_enqueue_script( 'spw-admin', plugins_url( 'js/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery' ), self::$ver, true );
+			wp_enqueue_script( 'spw-admin', plugins_url( 'js/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery', 'underscore' ), self::$ver, true );
 		}
 
 	}
@@ -221,42 +200,6 @@ class Select_Posts_Widget extends WP_Widget {
 		return $post_types;
 	}
 
-	/**
-	 * AJAX callback for searches
-	 */
-	public function search_callback() {
-		if ( ! isset( $_POST['query'] ) ) {
-			die();
-		}
-		check_ajax_referer( 'select-posts-widget', 'security' );
-		$not_in_array = array();
-		$widget_id = $_POST['widget_id'];
-		$post_type  = $this->post_types($widget_id);
-		if ( isset( $_POST['alreadySelected'] ) ) {
-			$not_in_array = json_decode( $_POST['alreadySelected'] );
-		}
-		$query = esc_attr( $_POST['query'] );
-		$args  = array(
-			's'            => $query,
-			'post__not_in' => $not_in_array,
-			'post_type'    => $post_type,
-			'post_status'  => 'publish',
-		);
-
-
-		$posts = new WP_Query( $args );
-		if ( $posts->have_posts() ) :
-			while ( $posts->have_posts() ) : $posts->the_post(); ?>
-				<?php echo '<div class="search-result" data-post-id="' . get_the_ID() . '"><div class="spw-plus"> + </div> ' . get_the_title() . '</div>'; ?>
-			<?php endwhile; ?>
-			<?php wp_reset_postdata(); ?>
-		<?php else : ?>
-			<p class="no-results">No results</p>
-		<?php endif; ?>
-
-		<?php die(); ?>
-	<?php
-	}
 
 	/**
 	 * Perform the actual registration of the widget
