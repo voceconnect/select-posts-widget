@@ -101,7 +101,7 @@ class Select_Posts_Widget extends WP_Widget {
 			<?php
 			$post_types = $this->post_types( $this->id );
 
-			if ( ! function_exists( 'post_selection_ui ') ) {
+			if ( function_exists( 'post_selection_ui ') ) {
 				echo post_selection_ui( $this->get_field_name( 'post_ids' ), array(
 						'post_type' => $post_types,
 						'selected'  => $post_ids_array,
@@ -109,7 +109,9 @@ class Select_Posts_Widget extends WP_Widget {
 					)
 				);
 			} else {
-				echo 'something is not right?';
+				?>
+				<strong>Missing Post Selection UI Plugin</strong>
+				<?php
 			}
 
 
