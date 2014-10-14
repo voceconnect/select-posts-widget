@@ -52,7 +52,7 @@ Simply extend the plugin using the `spw_select_posts_widget` filter.
 
 == Changelog ==
 
-**0.6.0**
+**0.6.0**  
 *Works with widget section in the theme customizer
 *Filter post types globally or per post type (by passing optional argument of widget id in spw_template and spw_post_types filters)
 
