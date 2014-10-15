@@ -10,7 +10,9 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-require __DIR__ . '/lib/class-select-posts-widget.php';
 
+
+require __DIR__ . '/lib/class-select-posts-widget.php';
+@include( dirname(__FILE__) . '/vendor/autoload.php' );
 $select_posts_widget = new Select_Posts_Widget;
 $select_posts_widget->init();

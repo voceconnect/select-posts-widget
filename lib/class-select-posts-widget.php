@@ -1,5 +1,6 @@
 <?php
 
+
 class Select_Posts_Widget extends WP_Widget {
 
 	protected static $text_domain = 'select_posts_widget';
@@ -10,8 +11,9 @@ class Select_Posts_Widget extends WP_Widget {
 	 * Initialization method
 	 */
 	public function init() {
-		add_action( 'widgets_init', array(__CLASS__, 'register_widget'));
-		add_action( 'admin_print_scripts-widgets.php', array( $this, 'enqueue' ) );
+		add_action( 'widgets_init', array( __CLASS__, 'register_widget' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
+		add_action( 'customize_controls_enqueue_scripts', array( __CLASS__, 'enqueue_customizer') );
 
 	}
 
@@ -41,19 +43,21 @@ class Select_Posts_Widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$template_file = plugin_dir_path( dirname( __FILE__ ) ) . 'views/widget.php';
 		$template_file = apply_filters( 'spw_template', $template_file, $this->id );
-		$title         = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'Recent Posts' );
+		$title         = ( ! empty( $instance['title'] ) ) ? $instance['title'] : null;
 		$title         = apply_filters( 'widget_title', $title, $instance, $this->id_base );
-		$posts         = explode(',', $instance['post_ids']);
+
+		$posts         = isset( $instance['post_ids'] ) ? explode( ',', $instance['post_ids'] ) : null;
+
 		if ( ! is_array( $posts ) || ! count( $posts ) ) {
 			return;
 		}
 		$posts = $this->get( $posts, $this->id );
-		?>
-		<?php extract( $args ); ?>
-		<?php echo $args['before_widget']; ?>
-		<?php include( $template_file ); ?>
-		<?php echo $args['after_widget']; ?>
-	<?php
+
+		extract( $args );
+		echo $args['before_widget'];
+		include( $template_file );
+		echo $args['after_widget'];
+
 	}
 
 	/**
@@ -67,8 +71,8 @@ class Select_Posts_Widget extends WP_Widget {
 	 * @return array Updated safe values to be saved.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$instance               = array();
-		$instance['title']      = esc_attr( $new_instance['title'] );
+		$instance             = array();
+		$instance['title']    = esc_attr( $new_instance['title'] );
 		$instance['post_ids'] = esc_attr( $new_instance['post_ids'] );
 		delete_transient( $this->id );
 
@@ -81,14 +85,16 @@ class Select_Posts_Widget extends WP_Widget {
 	 * @see WP_Widget::form()
 	 *
 	 * @param array $instance Previously saved values from database.
+	 *
 	 * @return void
 	 */
 	public function form( $instance ) {
 		if ( ! isset( $instance['title'] ) ) {
 			$instance['title'] = __( 'Posts', self::$text_domain );
 		}
-		$post_ids = $instance['post_ids'];
-		$post_ids_array = explode(',', $post_ids );
+
+		$post_ids_array = isset($instance['post_ids']) ? explode( ',', $instance['post_ids'] ) : array();
+
 		?>
 		<div class="spw-form">
 			<p>
@@ -101,32 +107,30 @@ class Select_Posts_Widget extends WP_Widget {
 			<?php
 			$post_types = $this->post_types( $this->id );
 
-			if ( function_exists( 'post_selection_ui ') ) {
+			if ( function_exists( 'post_selection_ui' ) ) {
 				echo post_selection_ui( $this->get_field_name( 'post_ids' ), array(
 						'post_type' => $post_types,
-						'selected'  => $post_ids_array,
-						'limit'     => 100
+						'selected'  => $post_ids_array
 					)
 				);
 			} else {
 				?>
 				<strong>Missing Post Selection UI Plugin</strong>
-				<?php
+			<?php
 			}
 
 
-
-
-				$output_post_type = null;
-				foreach($post_types as $post_type) {
-					if ( $output_post_type ) {
-						$output_post_type .= ', ';
-					}
-					$output_post_type .= $post_type;
+			$output_post_type = null;
+			foreach ( $post_types as $post_type ) {
+				if ( $output_post_type ) {
+					$output_post_type .= ', ';
 				}
+				$output_post_type .= $post_type;
+			}
 
 			?>
-			<p>This widget is registered to display the following post type<?php echo count($post_types) > 1 ? 's' : ''; ?>: <strong><?php echo $output_post_type; ?> </strong></p>
+			<p>This widget is registered to display the following post type<?php echo count( $post_types ) > 1 ? 's' : ''; ?>:
+				<strong><?php echo $output_post_type; ?> </strong></p>
 			<hr>
 
 		</div>
@@ -137,8 +141,6 @@ class Select_Posts_Widget extends WP_Widget {
 
 	/**
 	 * Get the posts
-	 *
-	 * Filter(s):
 	 *
 	 * @param array  $post_ids      List of posts to be retrieved
 	 * @param string $transient_key to keep transients consistent use the id of the widget as the transient key
@@ -156,7 +158,7 @@ class Select_Posts_Widget extends WP_Widget {
 			} else {
 				return; // we do not want anything that doesn't have posts
 			}
-			$args  = array(
+			$args = array(
 				'ignore_sticky_posts' => true,
 				'post__in'            => $post_ids,
 				'orderby'             => 'post__in',
@@ -177,24 +179,40 @@ class Select_Posts_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Enqueue CSS and JS
+	 * Enqueue CSS and JS in admin
 	 */
-	public function enqueue() {
+	public static function enqueue() {
 
 		if ( is_admin() ) {
 			wp_enqueue_style( 'spw-admin', plugins_url( 'css/' . 'spw-admin.min.css', dirname( __FILE__ ) ), false, self::$ver );
-			wp_enqueue_script( 'spw-admin', plugins_url( 'js/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array( 'jquery', 'underscore' ), self::$ver, true );
 		}
 
 	}
+
+	/**
+	 * Enqueue CSS and JS in customizer
+	 */
+	public function enqueue_customizer(){
+
+		wp_enqueue_script( 'spw-admin', plugins_url( 'js/' . 'spw-admin.min.js', dirname( __FILE__ ) ), array(
+			'jquery',
+			'underscore'
+		), self::$ver, true );
+
+	}
+
 
 	/**
 	 * Return the post types for this widget
 	 *
 	 * Filter(s):
 	 * 'spw_post_types' - filter what post types are included
+	 *
+	 * @param $id
+	 *
+	 * @return mixed|void
 	 */
-	public function post_types($id = null) {
+	public function post_types( $id ) {
 
 		$default_post_types = array( 'post' );
 		$post_types         = apply_filters( 'spw_post_types', $default_post_types, $id );
@@ -206,10 +224,10 @@ class Select_Posts_Widget extends WP_Widget {
 	/**
 	 * Perform the actual registration of the widget
 	 */
-	public static function register_widget(){
+	public static function register_widget() {
 
 		register_widget( "Select_Posts_Widget" );
 
 	}
 
-} 
+}

@@ -10,7 +10,10 @@
         }
     ],
     "type": "wordpress-plugin",
-    "autoload": {
-        "files": ["select-posts-widget.php"]
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "require": {
+        "voceconnect/post-selection-ui": "~1.0"
     }
 }

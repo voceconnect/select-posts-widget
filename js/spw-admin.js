@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
     /**
      * If sort event triggered on jQueryUI Sortable, update the widget by triggering change on input.title on the widget
      */
-    $(document).on('sort', '.psu-box .ui-sortable', function(e){
+    $(document).on('sort', '.psu-box .ui-sortable', function(){
 
         updateWidgetDebounced( $(this));
 
@@ -35,4 +35,3 @@ jQuery(document).ready(function ($) {
     });
 
 });
-
