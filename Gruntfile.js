@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 
     // Lint JavaScript
     jshint: {
-      all: ['js/spw-admin.js'],
+      all: ['js/spw-admin.js', 'js/spw-customizer.js'],
        options:{
         "forin": true,
         "noarg": true,
@@ -29,10 +29,12 @@ module.exports = function(grunt) {
                 preserveComments: "some"
             },
             files: {
-                "js/spw-admin.min.js": [
-                    "js/*.js",
-                    "!js/*.min.js",
+                "js/spw-customizer.min.js": [
+                    "js/spw-customizer.js",
                 ],
+                "js/spw-admin.min.js" : [
+                    "js/spw-admin.js"
+                ]
             }
         }
     },
@@ -64,14 +66,14 @@ module.exports = function(grunt) {
         files: ['js/*.js'],
         tasks: ['jshint', 'uglify'],
         options: {
-          livereload: true,
+          livereload: true
         }
       },
       css: {
         files: ['sass/*.scss'],
         tasks: ['sass', 'cssmin'],
         options: {
-          livereload: true,
+          livereload: true
         }
       }
     }

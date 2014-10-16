@@ -1,0 +1,52 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "fa60796a60f9e4f6024187c1d9ed48a5",
+    "packages": [
+        {
+            "name": "voceconnect/post-selection-ui",
+            "version": "dev-wp_3_5_to_4_0_compatibility",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voceconnect/post-selection-ui.git",
+                "reference": "aaac37203418880235e31fb36eff03c9a70ea068"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voceconnect/post-selection-ui/zipball/aaac37203418880235e31fb36eff03c9a70ea068",
+                "reference": "aaac37203418880235e31fb36eff03c9a70ea068",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "post-selection-ui.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPLv2+"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Pretty",
+                    "email": "mpretty@voceconnect.com"
+                }
+            ],
+            "description": "A WordPress library to display a user interface to easily select posts from any post type",
+            "time": "2014-10-16 00:29:42"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "voceconnect/post-selection-ui": 20
+    },
+    "prefer-stable": false,
+    "platform": [],
+    "platform-dev": []
+}

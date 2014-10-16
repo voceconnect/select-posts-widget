@@ -36,41 +36,28 @@ Simply extend the plugin using the `spw_template` filter.
         }
     ?>
 
-
-
-= How do I set the plugin to use post types besides/in addition to `post`? =
-
-Simply extend the plugin using the `spw_select_posts_widget` filter.
-
-    <?php
-        add_filter( 'spw_select_posts_widget-15_template', 'customize_spw_post_types' );
-        function customize_spw_post_types($post_types){
-            $post_types = array( 'post', 'page' 'custom_post_type' );
-            return $post_types;
-        }
-    ?>
-
 == Changelog ==
 
 **0.7.0**
-*Refactored post selection to use the post selection ui (https://github.com/voceconnect/post-selection-ui)
+* Refactored post selection to use the post selection ui (https://github.com/voceconnect/post-selection-ui)
+* Added functionality that allows Can change post types on the fly.
 
 **0.6.0**  
-*Works with widget section in the theme customizer
-*Filter post types globally or per post type (by passing optional argument of widget id in spw_template and spw_post_types filters)
+* Works with widget section in the theme customizer
+* Filter post types globally or per post type (by passing optional argument of widget id in spw_template and spw_post_types filters)
 
 **0.5.1**  
-*Changed composer type to wordpress-plugin (was library)*
+* Changed composer type to wordpress-plugin (was library)
 
 **0.5.0**  
-*Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget*
-*Added templating for individual widgets*
-*Added indicator if no posts are selected*
-*Refactored WET code*
-*Updated code comments*
+* Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget
+* Added templating for individual widgets
+* Added indicator if no posts are selected
+* Refactored WET code
+* Updated code comments
   
 **0.4.1**  
-*Added readme*
+* Added readme
 
 **0.4**  
-*Added filter to allow developers ability to use custom template for widget*
+* Added filter to allow developers ability to use custom template for widget
