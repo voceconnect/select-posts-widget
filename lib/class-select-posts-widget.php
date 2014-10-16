@@ -85,7 +85,7 @@ class Select_Posts_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$template_file = plugin_dir_path( dirname( __FILE__ ) ) . 'views/widget.php';
-		$template_file = apply_filters( 'spw_template', $template_file, $this->id );
+		$template_file = apply_filters( 'spw_template', $template_file );
 		$title         = ( ! empty( $instance['title'] ) ) ? $instance['title'] : null;
 		$title         = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
@@ -94,6 +94,7 @@ class Select_Posts_Widget extends WP_Widget {
 		if ( ! is_array( $posts ) || ! count( $posts ) ) {
 			return;
 		}
+
 		$posts = $this->get( $posts, $this->id );
 
 		extract( $args );
@@ -139,8 +140,10 @@ class Select_Posts_Widget extends WP_Widget {
 			$instance['title'] = __( 'Posts', self::$text_domain );
 		}
 
-		$post_type      = isset( $instance['post_type'] ) ? $instance['post_type'] : null;
+		$public_post_types = self::get_post_types();
+		$post_type      = isset( $instance['post_type'] ) ? $instance['post_type'] : $public_post_types[0];
 		$post_ids_array = isset( $instance['post_ids'] ) ? explode( ',', $instance['post_ids'] ) : array();
+
 
 		?>
 
@@ -149,18 +152,8 @@ class Select_Posts_Widget extends WP_Widget {
 				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', self::$text_domain ); ?></label>
 				<input class="widefat title" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $instance['title']; ?>" />
 			</p>
-
-			<div class="spinner"></div>
-			<div class="post-selection-ui-wrap">
-				<?php
-				echo $this->post_selection_ui( $post_type, $post_ids_array );
-				?>
-			</div>
-			<?php
-			$public_post_types = apply_filters( 'spw_post_types', get_post_types( array( 'public' => true ), 'objects', 'and' ) );
-			?>
 			<p>
-				<label for="<?php echo $this->get_field_name( 'post_type' ); ?>">Change Post Type</label>
+				<label for="<?php echo $this->get_field_name( 'post_type' ); ?>">Post Type:</label>
 				<select class="post-type widefat" id="<?php echo $this->get_field_id( 'post_type' ); ?>" name="<?php echo $this->get_field_name( 'post_type' ); ?>"><?php
 					foreach ( $public_post_types as $public_post_type ) {
 
@@ -173,12 +166,30 @@ class Select_Posts_Widget extends WP_Widget {
 					}
 					?></select>
 			</p>
+
+			<div class="spinner"></div>
+			<div class="post-selection-ui-wrap">
+				<?php
+				echo $this->post_selection_ui( $post_type, $post_ids_array );
+				?>
+			</div>
+
 			<input type="hidden" class="security" value="<?php echo wp_create_nonce( 'select-posts-widget' ) ?>">
 
 
 		</div>
 
 	<?php
+	}
+
+	/**
+	 * Get the post types
+	 * @return array of post type objects
+	 */
+	public static function get_post_types(){
+
+		return apply_filters( 'spw_post_types', get_post_types( array( 'public' => true ), 'objects', 'and' ) );
+
 	}
 
 	/**

@@ -13,14 +13,12 @@ An easy to use (and extend) widget that allows you to selectively curate posts u
 
 The following filters are available:
 
-* spw_template to override the output template for the widget, see below for more information. Passes an optional second argument of the widget id.
+* spw_template to override the output template for the widget, see FAQ below for more information.
+* spw_post_types to override the post types available for this widget, see FAQ below for more information.
 * widget_title this is a WordPress core filter [see here](http://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters) for more information.
-* spw_post_types to override the post types available for this widget. Passes an optional second argument of the widget id.
-
 
 == Installation ==
 > See [Installing Plugins](http://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
-
 
 == Frequently Asked Questions ==
 
@@ -36,28 +34,40 @@ Simply extend the plugin using the `spw_template` filter.
         }
     ?>
 
+= How do I restrict post types from being used in these widgets? =
+
+Simply extend the plugin using the `spw_post_types` filter.
+
+    <?php
+        add_filter( 'spw_post_types', 'customize_spw_post_types' );
+        function customize_spw_post_types( $post_types ){
+            unset($post_types['page']);
+            return $post_types;
+        }
+    ?>
+
 == Changelog ==
 
 **0.7.0**
-* Refactored post selection to use the post selection ui (https://github.com/voceconnect/post-selection-ui)
+* Refactored post selection to use the post selection ui (https://github.com/voceconnect/post-selection-ui).
+* Restrict post types available to widgets.
 * Added functionality that allows Can change post types on the fly.
 
 **0.6.0**  
-* Works with widget section in the theme customizer
-* Filter post types globally or per post type (by passing optional argument of widget id in spw_template and spw_post_types filters)
+* Works with widget section in the theme customizer.
 
 **0.5.1**  
-* Changed composer type to wordpress-plugin (was library)
+* Changed composer type to wordpress-plugin (was library).
 
 **0.5.0**  
-* Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget
-* Added templating for individual widgets
-* Added indicator if no posts are selected
-* Refactored WET code
-* Updated code comments
+* Bound javascript events on 'body' instead of '.widget' to ensure events persist after destroying/creating widget.
+* Added templating for individual widgets.
+* Added indicator if no posts are selected.
+* Refactored WET code.
+* Updated code comments.
   
 **0.4.1**  
-* Added readme
+* Added readme.
 
 **0.4**  
-* Added filter to allow developers ability to use custom template for widget
+* Added filter to allow developers ability to use custom template for widget.
